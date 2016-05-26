@@ -123,8 +123,8 @@ NSInteger YAJLDocumentStackCapacity = 20;
 	NSDictionary *dict = dict_;
 	[self _pop];
 	[self parser:parser didAdd:value];
-	if ([delegate_ respondsToSelector:@selector(document:didAddDictionary:)])
-	[delegate_ document:self didAddDictionary:dict];
+	if ([delegate_ respondsToSelector:@selector(document:didAddDictionary:stackCount:)])
+        [delegate_ document:self didAddDictionary:dict stackCount:stack_.count];
 }
 
 - (void)parserDidStartArray:(YAJLParser *)parser {
@@ -140,8 +140,8 @@ NSInteger YAJLDocumentStackCapacity = 20;
 	NSArray *array = array_;
 	[self _pop];
 	[self parser:parser didAdd:value];
-	if ([delegate_ respondsToSelector:@selector(document:didAddArray:)])
-	[delegate_ document:self didAddArray:array];
+	if ([delegate_ respondsToSelector:@selector(document:didAddArray:stackCount:)])
+        [delegate_ document:self didAddArray:array stackCount:stack_.count];
 }
 
 - (void)_pop {

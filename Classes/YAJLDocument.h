@@ -49,15 +49,17 @@ extern NSInteger YAJLDocumentStackCapacity;
  Did add dictionary.
  @param document Sender
  @param dict Dictionary that was added
+ @param stackCount The stack count after the dictionary was popped off
  */
-- (void)document:(YAJLDocument *)document didAddDictionary:(NSDictionary *)dict;
+- (void)document:(YAJLDocument *)document didAddDictionary:(NSDictionary *)dict stackCount:(NSInteger)stackCount;
 
 /*!
  Did add array.
  @param document Sender
  @param array Array that was added
+ @param stackCount The stack count after the array was popped off
  */
-- (void)document:(YAJLDocument *)document didAddArray:(NSArray *)array;
+- (void)document:(YAJLDocument *)document didAddArray:(NSArray *)array stackCount:(NSInteger)stackCount;
 
 /*!
  Did add object to array.
