@@ -74,6 +74,12 @@ NSInteger YAJLDocumentStackCapacity = 20;
 - (YAJLParserStatus)parse:(NSData *)data error:(NSError **)error {
 	parserStatus_ = [parser_ parse:data];
 	if (error) *error = parser_.parserError;
+    
+    // if we're at state OK and have stack count of zero, then consider us done
+    if (parserStatus_ == YAJLParserStatusOK && stack_.count == 0) {
+        parserStatus_ = YAJLParserStatusFinished;
+    }
+    
 	return parserStatus_;
 }
 

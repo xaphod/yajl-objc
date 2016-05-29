@@ -55,7 +55,8 @@ typedef NS_ENUM(NSUInteger, YAJLParserOptions) {
 typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
   YAJLParserStatusNone = 0,  //!< No status
   YAJLParserStatusOK = 1, //!< Parsed OK
-  YAJLParserStatusError = 3 //!< Parser errored
+  YAJLParserStatusError = 3, //!< Parser errored
+  YAJLParserStatusFinished = 4 // added: more input would likely be considered garbage
 };
 
 
