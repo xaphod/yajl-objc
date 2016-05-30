@@ -49,6 +49,7 @@ typedef NS_ENUM(NSUInteger, YAJLParserOptions) {
     YAJLParserOptionsAllowComments = 1 << 0, //!< Javascript style comments will be allowed in the input (both /&asterisk; &asterisk;/ and //)
     YAJLParserOptionsCheckUTF8 = 1 << 1, //!< Invalid UTF8 strings will cause a parse error
     YAJLParserOptionsStrictPrecision = 1 << 2, //!< If YES will force strict precision and return integer overflow error
+    YAJLParserOptionsMultipleValues = 1 << 3, //!< If YES, will parse multiple JSON values in a single file/stream. Useful for unending streams.
 };
 
 //! Parser status
@@ -148,6 +149,7 @@ typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
  - YAJLParserOptionsAllowComments: Javascript style comments will be allowed in the input (both /&asterisk; &asterisk;/ and //)
  - YAJLParserOptionsCheckUTF8: Invalid UTF8 strings will cause a parse error
  - YAJLParserOptionsStrictPrecision: If YES will force strict precision and return integer overflow error
+ - YAJLParserOptionsMultipleValues: If YES, will parse multiple JSON values in a single file/stream. Useful for unending streams.
  */
 - (instancetype)initWithParserOptions:(YAJLParserOptions)parserOptions NS_DESIGNATED_INITIALIZER;
 

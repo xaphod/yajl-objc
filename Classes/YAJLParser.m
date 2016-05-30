@@ -255,6 +255,7 @@ static yajl_callbacks callbacks = {
         handle_ = yajl_alloc(&callbacks, NULL, (__bridge void *)(self));
         yajl_config(handle_, yajl_allow_comments, (parserOptions_ & YAJLParserOptionsAllowComments) ? 1 : 0);
         yajl_config(handle_, yajl_dont_validate_strings, (parserOptions_ & YAJLParserOptionsCheckUTF8) ? 1 : 0);
+        yajl_config(handle_, yajl_allow_multiple_values, (parserOptions_ & YAJLParserOptionsMultipleValues) ? 1: 0);
         
         if (!handle_) {
             self.parserError = [self _errorForStatus:YAJLParserErrorCodeAllocError message:@"Unable to allocate YAJL handle" value:nil];
