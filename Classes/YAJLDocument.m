@@ -42,129 +42,129 @@ NSInteger YAJLDocumentStackCapacity = 20;
 @synthesize root=root_, parserStatus=parserStatus_, delegate=delegate_;
 
 - (instancetype)init {
-	return [self initWithParserOptions:0];
+    return [self initWithParserOptions:0];
 }
 
 - (instancetype)initWithParserOptions:(YAJLParserOptions)parserOptions {
-	return [self initWithParserOptions:parserOptions capacity:YAJLDocumentStackCapacity];
+    return [self initWithParserOptions:parserOptions capacity:YAJLDocumentStackCapacity];
 }
 
 - (instancetype)initWithParserOptions:(YAJLParserOptions)parserOptions capacity:(NSInteger)capacity {
-	if ((self = [super init])) {
-		stack_ = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
-		keyStack_ = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
-		parserStatus_ = YAJLParserStatusNone;
-		parser_ = [[YAJLParser alloc] initWithParserOptions:parserOptions];
-		parser_.delegate = self;
-	}
-	return self;
+    if ((self = [super init])) {
+        stack_ = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
+        keyStack_ = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
+        parserStatus_ = YAJLParserStatusNone;
+        parser_ = [[YAJLParser alloc] initWithParserOptions:parserOptions];
+        parser_.delegate = self;
+    }
+    return self;
 }
 
 - (instancetype)initWithData:(NSData *)data parserOptions:(YAJLParserOptions)parserOptions error:(NSError **)error {
-	return [self initWithData:data parserOptions:parserOptions capacity:YAJLDocumentStackCapacity error:error];
+    return [self initWithData:data parserOptions:parserOptions capacity:YAJLDocumentStackCapacity error:error];
 }
 
 - (instancetype)initWithData:(NSData *)data parserOptions:(YAJLParserOptions)parserOptions capacity:(NSInteger)capacity error:(NSError **)error {
-	if ((self = [self initWithParserOptions:parserOptions capacity:capacity])) {
-		[self parse:data error:error];
-	}
-	return self;
+    if ((self = [self initWithParserOptions:parserOptions capacity:capacity])) {
+        [self parse:data error:error];
+    }
+    return self;
 }
 
 - (YAJLParserStatus)parse:(NSData *)data error:(NSError **)error {
-	parserStatus_ = [parser_ parse:data];
-	if (error) *error = parser_.parserError;
+    parserStatus_ = [parser_ parse:data];
+    if (error) *error = parser_.parserError;
     
     // if we're at state OK and have stack count of zero, then consider us done
     if (parserStatus_ == YAJLParserStatusOK && stack_.count == 0) {
         parserStatus_ = YAJLParserStatusFinished;
     }
     
-	return parserStatus_;
+    return parserStatus_;
 }
 
 #pragma mark Delegates
 
 - (void)parser:(YAJLParser *)parser didAdd:(id)value {
-	switch (currentType_) {
-		case YAJLDecoderCurrentTypeArray:
-		[array_ addObject:value];
-		if ([delegate_ respondsToSelector:@selector(document:didAddObject:toArray:)])
-		[delegate_ document:self didAddObject:value toArray:array_];
-		break;
-		case YAJLDecoderCurrentTypeDict:
-		NSParameterAssert(key_);
-		if (value) dict_[key_] = value;
-		if ([delegate_ respondsToSelector:@selector(document:didSetObject:forKey:inDictionary:)])
-		[delegate_ document:self didSetObject:value forKey:key_ inDictionary:dict_];
-		[self _popKey];
-		break;
-		default:
-		break;
-	}
+    switch (currentType_) {
+        case YAJLDecoderCurrentTypeArray:
+            [array_ addObject:value];
+            if ([delegate_ respondsToSelector:@selector(document:didAddObject:toArray:)])
+                [delegate_ document:self didAddObject:value toArray:array_];
+            break;
+        case YAJLDecoderCurrentTypeDict:
+            NSParameterAssert(key_);
+            if (value) dict_[key_] = value;
+            if ([delegate_ respondsToSelector:@selector(document:didSetObject:forKey:inDictionary:)])
+                [delegate_ document:self didSetObject:value forKey:key_ inDictionary:dict_];
+            [self _popKey];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)parser:(YAJLParser *)parser didMapKey:(NSString *)key {
-	key_ = key;
-	[keyStack_ addObject:key_]; // Push
+    key_ = key;
+    [keyStack_ addObject:key_]; // Push
 }
 
 - (void)_popKey {
-	key_ = nil;
-	[keyStack_ removeLastObject]; // Pop
-	if (keyStack_.count > 0)
-	key_ = keyStack_[keyStack_.count-1];
+    key_ = nil;
+    [keyStack_ removeLastObject]; // Pop
+    if (keyStack_.count > 0)
+        key_ = keyStack_[keyStack_.count-1];
 }
 
 - (void)parserDidStartDictionary:(YAJLParser *)parser {
-	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:YAJLDocumentStackCapacity];
-	if (!root_) root_ = dict;
-	[stack_ addObject:dict]; // Push
-	dict_ = dict;
-	currentType_ = YAJLDecoderCurrentTypeDict;
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:YAJLDocumentStackCapacity];
+    if (!root_) root_ = dict;
+    [stack_ addObject:dict]; // Push
+    dict_ = dict;
+    currentType_ = YAJLDecoderCurrentTypeDict;
 }
 
 - (void)parserDidEndDictionary:(YAJLParser *)parser {
-	id value = stack_[stack_.count-1];
-	NSDictionary *dict = dict_;
-	[self _pop];
-	[self parser:parser didAdd:value];
-	if ([delegate_ respondsToSelector:@selector(document:didAddDictionary:stackCount:)])
+    id value = stack_[stack_.count-1];
+    NSDictionary *dict = dict_;
+    [self _pop];
+    [self parser:parser didAdd:value];
+    if ([delegate_ respondsToSelector:@selector(document:didAddDictionary:stackCount:)])
         [delegate_ document:self didAddDictionary:dict stackCount:stack_.count];
 }
 
 - (void)parserDidStartArray:(YAJLParser *)parser {
-	NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
-	if (!root_) root_ = array;
-	[stack_ addObject:array]; // Push
-	array_ = array;
-	currentType_ = YAJLDecoderCurrentTypeArray;
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:YAJLDocumentStackCapacity];
+    if (!root_) root_ = array;
+    [stack_ addObject:array]; // Push
+    array_ = array;
+    currentType_ = YAJLDecoderCurrentTypeArray;
 }
 
 - (void)parserDidEndArray:(YAJLParser *)parser {
-	id value = stack_[stack_.count-1];
-	NSArray *array = array_;
-	[self _pop];
-	[self parser:parser didAdd:value];
-	if ([delegate_ respondsToSelector:@selector(document:didAddArray:stackCount:)])
+    id value = stack_[stack_.count-1];
+    NSArray *array = array_;
+    [self _pop];
+    [self parser:parser didAdd:value];
+    if ([delegate_ respondsToSelector:@selector(document:didAddArray:stackCount:)])
         [delegate_ document:self didAddArray:array stackCount:stack_.count];
 }
 
 - (void)_pop {
-	[stack_ removeLastObject];
-	array_ = nil;
-	dict_ = nil;
-	currentType_ = YAJLDecoderCurrentTypeNone;
-	
-	id value = nil;
-	if (stack_.count > 0) value = stack_[stack_.count-1];
-	if ([value isKindOfClass:[NSArray class]]) {
-		array_ = (NSMutableArray *)value;
-		currentType_ = YAJLDecoderCurrentTypeArray;
-	} else if ([value isKindOfClass:[NSDictionary class]]) {
-		dict_ = (NSMutableDictionary *)value;
-		currentType_ = YAJLDecoderCurrentTypeDict;
-	}
+    [stack_ removeLastObject];
+    array_ = nil;
+    dict_ = nil;
+    currentType_ = YAJLDecoderCurrentTypeNone;
+    
+    id value = nil;
+    if (stack_.count > 0) value = stack_[stack_.count-1];
+    if ([value isKindOfClass:[NSArray class]]) {
+        array_ = (NSMutableArray *)value;
+        currentType_ = YAJLDecoderCurrentTypeArray;
+    } else if ([value isKindOfClass:[NSDictionary class]]) {
+        dict_ = (NSMutableDictionary *)value;
+        currentType_ = YAJLDecoderCurrentTypeDict;
+    }
 }
 
 @end
