@@ -38,25 +38,25 @@ extern NSString *const YAJLParserValueKey; //! Key in NSError userInfo for value
 
 //! Parser error codes
 typedef NS_ENUM(NSInteger, YAJLParserErrorCode) {
-  YAJLParserErrorCodeAllocError = -1000, //!< Alloc error
-  YAJLParserErrorCodeDoubleOverflow = -1001, //!< Double overflow
-  YAJLParserErrorCodeIntegerOverflow = -1002 //!< Integer overflow
+    YAJLParserErrorCodeAllocError = -1000, //!< Alloc error
+    YAJLParserErrorCodeDoubleOverflow = -1001, //!< Double overflow
+    YAJLParserErrorCodeIntegerOverflow = -1002 //!< Integer overflow
 };
 
 //! Parser options
 typedef NS_ENUM(NSUInteger, YAJLParserOptions) {
-  YAJLParserOptionsNone = 0, //!< No options
-  YAJLParserOptionsAllowComments = 1 << 0, //!< Javascript style comments will be allowed in the input (both /&asterisk; &asterisk;/ and //)
-  YAJLParserOptionsCheckUTF8 = 1 << 1, //!< Invalid UTF8 strings will cause a parse error
-  YAJLParserOptionsStrictPrecision = 1 << 2, //!< If YES will force strict precision and return integer overflow error
+    YAJLParserOptionsNone = 0, //!< No options
+    YAJLParserOptionsAllowComments = 1 << 0, //!< Javascript style comments will be allowed in the input (both /&asterisk; &asterisk;/ and //)
+    YAJLParserOptionsCheckUTF8 = 1 << 1, //!< Invalid UTF8 strings will cause a parse error
+    YAJLParserOptionsStrictPrecision = 1 << 2, //!< If YES will force strict precision and return integer overflow error
 };
 
 //! Parser status
 typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
-  YAJLParserStatusNone = 0,  //!< No status
-  YAJLParserStatusOK = 1, //!< Parsed OK
-  YAJLParserStatusError = 3, //!< Parser errored
-  YAJLParserStatusFinished = 4 // added: more input would likely be considered garbage
+    YAJLParserStatusNone = 0,  //!< No status
+    YAJLParserStatusOK = 1, //!< Parsed OK
+    YAJLParserStatusError = 3, //!< Parser errored
+    YAJLParserStatusFinished = 4 // added: more input would likely be considered garbage
 };
 
 
@@ -117,7 +117,7 @@ typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
  parser.delegate = self;
  [parser parse:data];
  if (parser.parserError) {
-   NSLog(@"Error:\n%@", parser.parserError);
+ NSLog(@"Error:\n%@", parser.parserError);
  }
  
  parser.delegate = nil;
@@ -132,7 +132,7 @@ typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
  
  - (void)parser:(YAJLParser *)parser didMapKey:(NSString *)key { }
  - (void)parser:(YAJLParser *)parser didAdd:(id)value { }
-  @endcode
+ @endcode
  */
 @interface YAJLParser : NSObject
 
@@ -144,25 +144,25 @@ typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
 /*!
  Create parser with data and options.
  @param parserOptions Parser options
-  - YAJLParserOptionsNone: No options
-  - YAJLParserOptionsAllowComments: Javascript style comments will be allowed in the input (both /&asterisk; &asterisk;/ and //)
-  - YAJLParserOptionsCheckUTF8: Invalid UTF8 strings will cause a parse error
-  - YAJLParserOptionsStrictPrecision: If YES will force strict precision and return integer overflow error
+ - YAJLParserOptionsNone: No options
+ - YAJLParserOptionsAllowComments: Javascript style comments will be allowed in the input (both /&asterisk; &asterisk;/ and //)
+ - YAJLParserOptionsCheckUTF8: Invalid UTF8 strings will cause a parse error
+ - YAJLParserOptionsStrictPrecision: If YES will force strict precision and return integer overflow error
  */
 - (instancetype)initWithParserOptions:(YAJLParserOptions)parserOptions NS_DESIGNATED_INITIALIZER;
 
 /*!
  Parse data.
  
- If streaming, you can call parse multiple times as long as 
+ If streaming, you can call parse multiple times as long as
  previous calls return YAJLParserStatusInsufficientData.
  
  @param data
  @result Parser status
-  - YAJLParserStatusNone: No status
-  - YAJLParserStatusOK: Parsed OK 
-  - YAJLParserStatusInsufficientData: There was insufficient data
-  - YAJLParserStatusError: Parser errored
+ - YAJLParserStatusNone: No status
+ - YAJLParserStatusOK: Parsed OK
+ - YAJLParserStatusInsufficientData: There was insufficient data
+ - YAJLParserStatusError: Parser errored
  */
 - (YAJLParserStatus)parse:(NSData *)data;
 
