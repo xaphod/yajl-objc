@@ -50,6 +50,7 @@ typedef NS_ENUM(NSUInteger, YAJLParserOptions) {
     YAJLParserOptionsCheckUTF8 = 1 << 1, //!< Invalid UTF8 strings will cause a parse error
     YAJLParserOptionsStrictPrecision = 1 << 2, //!< If YES will force strict precision and return integer overflow error
     YAJLParserOptionsMultipleValues = 1 << 3, //!< If YES, will parse multiple JSON values in a single file/stream. Useful for unending streams.
+    YAJLParserOptionsPartialValues = 1 << 4, //!< If YES, will not error out when in the middle of parsing and gets EOF. Useful for unending streams.
 };
 
 //! Parser status
@@ -150,6 +151,7 @@ typedef NS_ENUM(NSUInteger, YAJLParserStatus) {
  - YAJLParserOptionsCheckUTF8: Invalid UTF8 strings will cause a parse error
  - YAJLParserOptionsStrictPrecision: If YES will force strict precision and return integer overflow error
  - YAJLParserOptionsMultipleValues: If YES, will parse multiple JSON values in a single file/stream. Useful for unending streams.
+ - YAJLParserOptionsPartialValues: If YES, will not error out when in the middle of parsing and gets EOF. Useful for unending streams
  */
 - (instancetype)initWithParserOptions:(YAJLParserOptions)parserOptions NS_DESIGNATED_INITIALIZER;
 
